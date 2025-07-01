@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>In-Memory JSON CRUD</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+
+<h2>In-Memory JSON CRUD</h2>
+
+<!-- Input form -->
+<input type="text" id="name" placeholder="Enter name">
+<button id="addBtn">Add</button>
+
+<!-- Data Table -->
+<table border="1" style="margin-top: 15px;">
+  <thead>
+    <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
+  </thead>
+  <tbody id="dataTableBody">
+  </tbody>
+</table>
+
+<script>
+  // In-memory JSON array
+  let jsonData = [];
+  let idCounter = 1;
+
+  // Function to render table
+  function renderTable() {
+    const $tbody = $("#dataTableBody");
+    $tbody.empty(); // Clear existing rows
+
+    jsonData.forEach(item => {
+      $tbody.append(`
+        <tr>
+          <td>${item.id}</td>
+          <td><span class="name">${item.name}</span></td>
+          <td>
+            <button class="editBtn" data-id="${item.id}">Edit</button>
+            <button class="deleteBtn" data-id="${item.id}">Delete</button>
+          </td>
+        </tr>
+      `);
+    });
+  }
+
+  // Insert new entry
+  $("#addBtn").click(() => {
+    const name = $("#name").val().trim();
+    if (name) {
+      jsonData.push({ id: idCounter++, name: name });
+      $("#name").val(""); // Clear input
+      renderTable();
+    }
+  });
+
+  // Edit entry
+  $(document).on("click", ".editBtn", function () {
+    const id = $(this).data("id");
+    const item = jsonData.find(entry => entry.id === id);
+    if (item) {
+      const newName = prompt("Edit name:", item.name);
+      if (newName !== null && newName.trim() !== "") {
+        item.name = newName.trim();
+        renderTable();
+      }
+    }
+  });
+
+  // Delete entry
+  $(document).on("click", ".deleteBtn", function () {
+    const id = $(this).data("id");
+    jsonData = jsonData.filter(item => item.id !== id);
+    renderTable();
+  });
+
+</script>
+
+</body>
+</html>
