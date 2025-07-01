@@ -2,14 +2,47 @@
 <html>
 
 <head>
-  <title>Google Sheet</title>
- 
+    <title>Google Sheet Form</title>
 </head>
 
 <body>
-  <h2>Google Sheet </h2>
- 
+    <h2>Insert into Google Sheet</h2>
+    <form id="form">
+        <input type="text" id="name" placeholder="Name" required>
+        <input type="number" id="age" placeholder="Age" required>
+        <button type="submit">Save</button>
+    </form>
 
+    <script>
+        const form = document.getElementById('form');
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxWNGuHkAsxVlHAP1WX65UWQ92BLe4PTNxzeylmldsa1Z829NlQAxI0CrIxwGbaqCmyrA/exec'; // 🔁 Replace with your actual Apps Script web app URL
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const data = {
+                name: document.getElementById('name').value,
+                age: document.getElementById('age').value
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+
+            .then(response => response.json())
+            .then(result => {
+                alert("Data inserted successfully!");
+                form.reset();
+            })
+            .catch(error => {
+                console.error("Error!", error.message);
+            });
+        });
+    </script>
 </body>
 
 </html>
