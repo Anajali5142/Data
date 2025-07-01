@@ -53,7 +53,9 @@
     const username = 'Anajali5142';
     const repo = 'Data';
     const path = 'data.json';
-    const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
+    
+    const apiUrl = `https://raw.githubusercontent.com/${username}/${repo}/main/${path}`;
+    // const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
 
     let currentData = [];
 
