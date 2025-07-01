@@ -1,81 +1,172 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-  <title>In-Memory JSON CRUD</title>
-  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <title>CRUD with GitHub JSON</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    input {
+      margin: 5px;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    td,
+    th {
+      border: 1px solid #ccc;
+      padding: 6px 12px;
+    }
+
+    button {
+      margin: 0 4px;
+    }
+  </style>
 </head>
+
 <body>
 
-<h2>In-Memory JSON CRUD</h2>
+  <h2>GitHub JSON CRUD</h2>
+  <form id="form">
+    <input type="hidden" id="editIndex">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="number" id="age" placeholder="Age" required>
+    <button type="submit">Save</button>
+  </form>
 
-<!-- Input form -->
-<input type="text" id="name" placeholder="Enter name">
-<button id="addBtn">Add</button>
+  <h3>Records:</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="dataBody"></tbody>
+  </table>
 
-<!-- Data Table -->
-<table border="1" style="margin-top: 15px;">
-  <thead>
-    <tr><th>ID</th><th>Name</th><th>Actions</th></tr>
-  </thead>
-  <tbody id="dataTableBody">
-  </tbody>
-</table>
+  <script>
+    const token = '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'; // Replace for security!
+    const username = 'Anajali5142';
+    const repo = 'Data';
+    const path = 'data.json';
+    const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
 
-<script>
-  // In-memory JSON array
-  let jsonData = [];
-  let idCounter = 1;
+    let currentData = [];
 
-  // Function to render table
-  function renderTable() {
-    const $tbody = $("#dataTableBody");
-    $tbody.empty(); // Clear existing rows
+    // Load and display data
+    async function loadData() {
+      const res = await fetch(apiUrl, {
+        headers: { Authorization: `token ${token}` }
+      });
 
-    jsonData.forEach(item => {
-      $tbody.append(`
-        <tr>
-          <td>${item.id}</td>
-          <td><span class="name">${item.name}</span></td>
-          <td>
-            <button class="editBtn" data-id="${item.id}">Edit</button>
-            <button class="deleteBtn" data-id="${item.id}">Delete</button>
-          </td>
-        </tr>
-      `);
-    });
-  }
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({}));
+        alert("❌ Error loading: " + (error.message || res.statusText));
+        return { data: [], sha: null };
+      }
 
-  // Insert new entry
-  $("#addBtn").click(() => {
-    const name = $("#name").val().trim();
-    if (name) {
-      jsonData.push({ id: idCounter++, name: name });
-      $("#name").val(""); // Clear input
-      renderTable();
-    }
-  });
+      const json = await res.json();
+      if (!json.content) {
+        alert("❌ No content found");
+        return { data: [], sha: json.sha || null };
+      }
 
-  // Edit entry
-  $(document).on("click", ".editBtn", function () {
-    const id = $(this).data("id");
-    const item = jsonData.find(entry => entry.id === id);
-    if (item) {
-      const newName = prompt("Edit name:", item.name);
-      if (newName !== null && newName.trim() !== "") {
-        item.name = newName.trim();
-        renderTable();
+      try {
+        const decoded = atob(json.content);
+        const data = JSON.parse(decoded);
+        const sha = json.sha;
+        currentData = data;
+        renderTable(data);
+        return { data, sha };
+      } catch (err) {
+        alert("❌ Failed to parse data.");
+        return { data: [], sha: null };
       }
     }
-  });
 
-  // Delete entry
-  $(document).on("click", ".deleteBtn", function () {
-    const id = $(this).data("id");
-    jsonData = jsonData.filter(item => item.id !== id);
-    renderTable();
-  });
+    // Save data to GitHub
+    async function saveData(updatedData, sha) {
+      const updatedContent = btoa(JSON.stringify(updatedData, null, 2));
+      return fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `token ${token}`,
+        },
+        body: JSON.stringify({
+          message: "Update JSON data",
+          content: updatedContent,
+          sha: sha,
+        }),
+      });
+    }
 
-</script>
+    // Render table
+    function renderTable(data) {
+      let rows = '';
+      data.forEach((item, index) => {
+        rows += `<tr>
+          <td>${item.name}</td>
+          <td>${item.age}</td>
+          <td>
+            <button onclick="editData(${index})">Edit</button>
+            <button onclick="deleteData(${index})">Delete</button>
+          </td>
+        </tr>`;
+      });
+      $('#dataBody').html(rows);
+    }
+
+    // Form submit (Insert or Update)
+    $('#form').on('submit', async function (e) {
+      e.preventDefault();
+      const name = $('#name').val();
+      const age = $('#age').val();
+      const editIndex = $('#editIndex').val();
+
+      const { sha } = await loadData();
+
+      if (editIndex === '') {
+        // Insert
+        currentData.push({ name, age });
+      } else {
+        // Update
+        currentData[editIndex] = { name, age };
+        $('#editIndex').val('');
+      }
+
+      await saveData(currentData, sha);
+      $('#name').val('');
+      $('#age').val('');
+      loadData();
+    });
+
+    // Edit handler
+    window.editData = function (index) {
+      const item = currentData[index];
+      $('#name').val(item.name);
+      $('#age').val(item.age);
+      $('#editIndex').val(index);
+    }
+
+    // Delete handler
+    window.deleteData = async function (index) {
+      if (!confirm("Are you sure you want to delete this record?")) return;
+
+      const { sha } = await loadData();
+      currentData.splice(index, 1); // Remove item
+      await saveData(currentData, sha);
+      loadData();
+    }
+
+    // Load on page load
+    loadData();
+  </script>
 
 </body>
+
 </html>
