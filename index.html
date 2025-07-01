@@ -62,8 +62,18 @@
     // Load and display data
     async function loadData() {
       const res = await fetch(apiUrl, {
-        headers: { Authorization: `token ${token}` }
-      });
+        // headers: { Authorization: `token ${token}` }
+      }).then(res => res.json())
+      .then(data => console.log(data));;
+
+      // const res = await fetch("https://raw.githubusercontent.com/Anajali5142/Data/main/data.json")
+      //  .then(res => res.json())
+      //  .then(data => console.log(data));
+
+
+      // fetch("https://raw.githubusercontent.com/Anajali5142/Data/main/data.json")
+      // .then(res => res.json())
+      // .then(data => console.log(data));
 
       if (!res.ok) {
         const error = await res.json().catch(() => ({}));
