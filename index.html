@@ -1,338 +1,172 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-    <meta charset="UTF-8">
-    <title>Candidate Information Form</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
-    <style>
-        body {
-        font-family: 'Roboto', sans-serif;
-        background-color: #ffffff;
-        padding: 30px;
-        }
-        .container {
-        width: 70%;
-        margin: auto;
-        border: 1px solid #ccc;
-        }
-        .container .form-group,
-        .container .note{
-            padding: 20px;
-        }
-        .header {
-        display: flex;
-        justify-content: space-between;
-        background-color: #002B5C;
-        color: white;
-        }
-        .header-img img{
-            height: 50px;
-        }
-        .header-img{
-            padding: 20px;
-            background-color: #f9f9f9;
-            width: 30%;
-        }
-        .header-title{
-            width: 70%;
-            padding: 20px 40px;
-            font-size: 15px;
-            letter-spacing: 3px;
-        }
-        .section-title {
-            background-color: #f4c522;
-            box-sizing: border-box;
-            font-weight: bold;
-            margin-top: 20px;
-            height: 34px;
-            position: relative;
-            display: inline-block;
-            padding: 7px 25px;       
-        }
-        .section-title:after {
-            background-color: #002b5c;
-            border-bottom: 2px solid #002B5C;
-            content: "";
-            height: 32px;
-            position: absolute;
-            right: -13px;
-            top: 0;
-            -webkit-transform: skew(-20deg);
-            -moz-transform: skew(-20deg);
-            transform: skew(31deg);
-            width: 23px;
-        }
+<html>
 
-        .form-group {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 10px;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 10px;
-        }
-        .form-group label {
-        flex: 1 0 30%;
-        font-weight: 500;
-        }
-        .form-group input, .form-group select {
-        flex: 1 0 65%;
-        padding: 5px;
-        border: none;
-        border-bottom: 1px solid #000;
-        outline: none;
-        background-color: #f9f9f9;
-        }
-        .education-table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-        }
-        .education-table th, .education-table td {
-        border: 1px solid #333;
-        padding: 8px;
-        text-align: left;
-        }
-        .education-table input {
-        width: 100%;
-        border: none;
-        border-bottom: 1px solid #000;
-        background: transparent;
-        padding: 5px;
-        }
-        .note {
-        font-size: 12px;
-        margin-top: 15px;
-        color: #333;
-        }
-        .note ul {
-        padding-left: 20px;
-        }
-        .checkbox-group {
-        margin-top: 15px;
-        padding-left: 10px;
-        border-bottom: 1px solid #ccc;
-        padding-bottom: 10px;
-        }
-        .checkbox-group label {
-        margin-right: 15px;
-        }
-        h2 {
-        margin: 0;
-        }
-    </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <div class="header-img">
-                    <img src="img/CasepointLogIndia.png" alt="Casepoint">
-                </div> 
-                <div class="header-title">
-                    <h2>Candidate <br> Information Form</h2>
-                </div>
-            </div>
+<head>
+  <title>CRUD with GitHub JSON</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    input {
+      margin: 5px;
+    }
 
-            <div class="form-group">
-                <label>Date:</label>
-                <input type="text">
-                <label>Applied For:</label>
-                <input type="text">
-            </div>
+    table {
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
 
-            <div class="section-title">Basic Information</div>
-            <div class="form-group">
-                <label>Full Name:</label><input type="text">
-                <label>Address:</label><input type="text">
-            </div>
-            <div class="form-group">
-                <label>Contact No:</label><input type="text">
-                <label>Alternate No:</label><input type="text">
-            </div>
-            <div class="form-group">
-                <label>Birth Date:</label><input type="date">
-                <label>Gender:</label>
-                <select><option>Male</option><option>Female</option></select>
-                <label>Blood Group:</label><input type="text">
-            </div>
-            <div class="form-group">
-                <label>Marital Status:</label><input type="text">
-                <label>Email:</label><input type="email">
-            </div>
+    td,
+    th {
+      border: 1px solid #ccc;
+      padding: 6px 12px;
+    }
 
-            <div class="section-title">Education Qualification</div>
-            <div class="form-group">
-                <table class="education-table">
-                    <thead>
-                    <tr>
-                        <th>Degree</th>
-                        <th>University/Institute Name</th>
-                        <th>Passing Year</th>
-                        <th>Percentage</th>
-                        <th>Remark</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr><td>anjali</td><td>anjali</td><td>anjali</td><td>anjali</td><td>anjali</td></tr>
-                    <tr><td>anjali</td><td>anjali</td><td>anjali</td><td>anjali</td><td>anjali</td></tr>
-                    </tbody>
-                </table>
-            </div>
+    button {
+      margin: 0 4px;
+    }
+  </style>
+</head>
 
-            <div class="note">
-                <p><strong>NOTE:</strong> EIGHTEEN MONTHS EMPLOYMENT AGREEMENT IS COMPULSORY FROM THE DATE OF JOINING.</p>
-                <ul>
-                <li>Do not apply if you're studying or doing any external training.</li>
-                <li>We don't consider Vocational Training/Academic projects as Professional Experience.</li>
-                <li>There will be 3 months assessment period; thereafter based on performance your employment will be continued.</li>
-                <li>You must have good internet connection at home to support work from home for any official request.</li>
-                </ul>
-            </div>
+<body>
 
-            <div class="section-title">Experience & Skills</div>
-            <div class="form-group">
-                <label>Years of experience:</label><input type="text">
-                <label>Technical skill set:</label><input type="text">
-            </div>
-            <div class="form-group">
-                <label>Strengths:</label><input type="text">
-                <label>Weakness:</label><input type="text">
-            </div>
-            <div class="form-group">
-                <label>Current company name:</label><input type="text">
-                <label>Current Company DOJ:</label><input type="text">
-            </div>
-            <div class="form-group">
-                <label>Current CTC:</label><input type="text">
-                <label>Expected CTC:</label><input type="text">
-            </div>
+  <h2>GitHub JSON CRUD</h2>
+  <form id="form">
+    <input type="hidden" id="editIndex">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="number" id="age" placeholder="Age" required>
+    <button type="submit">Save</button>
+  </form>
 
-            <div class="checkbox-group">
-                <label>Ready for flexible timing and shift rotation:</label>
-                <label><input type="radio" name="flexible" value="Yes"> Yes</label>
-                <label><input type="radio" name="flexible" value="No"> No</label>
-            </div>
-            <div class="checkbox-group">
-                <label>Any open backlog/ATKT:</label>
-                <label><input type="radio" name="backlog" value="Yes"> Yes</label>
-                <label><input type="radio" name="backlog" value="No"> No</label>
-            </div>
-            <div class="checkbox-group">
-                <label>Ready to sign eighteen months agreement:</label>
-                <label><input type="radio" name="agreement" value="Yes"> Yes</label>
-                <label><input type="radio" name="agreement" value="No"> No</label>
-            </div>
+  <h3>Records:</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="dataBody"></tbody>
+  </table>
 
-            <div class="section-title">Professional Experience Summary</div>
-            <div class="form-group">
-                <table class="education-table">
-                    <thead>
-                    <tr>
-                        <th>Company Name</th>
-                        <th>Location</th>
-                        <th>Designation</th>
-                        <th>Experience (Months)</th>
-                        <th>Technology</th>
-                        <th>Note</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr><td>anjali</td><td>anjali</td><td>anjali</td><td>anjali</td><td>anjali</td><td>anjali</td></tr>
-                    </tbody>
-                </table>
-            </div>
+  <script>
+    const token = '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'; // Replace for security!
+    const username = 'Anajali5142';
+    const repo = 'Data';
+    const path = 'data.json';
+    const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents/${path}`;
 
-            <div class="section-title">Reference Information</div>
-            <div class="form-group">
-                <label>Internal reference name:</label><input type="text">
-                <label>Contact number:</label><input type="text">
-            </div>
-            <div class="form-group">
-                <label>External reference name:</label><input type="text">
-                <label>Contact number:</label><input type="text">
-            </div>
+    let currentData = [];
 
-            <div class="rating-group">
-                <label>ASP.NET / MVC: <input type="text"></label>
-                <label>VB.NET / C#: <input type="text"></label>
-                <label>MSSQL / Database: <input type="text"></label>
-                <label>Mobile Apps: <input type="text"></label>
-                <label>Testing: <input type="text"></label>
-                <label>Others: <input type="text"></label>
-            </div>
+    // Load and display data
+    async function loadData() {
+      const res = await fetch(apiUrl, {
+        headers: { Authorization: `token ${token}` }
+      });
 
-            <div class="section-title">Current Employer’s Information</div>
-            <div class="form-group">
-                <label>Company Name:</label><input type="text">
-                <label>Address:</label><input type="text">
-            </div>
-            <div class="form-group">
-                <label>Reporting Person Name:</label><input type="text">
-                <label>HR Person’s Name:</label><input type="text">
-                <label>HR’s email id:</label><input type="email">
-            </div>
+      if (!res.ok) {
+        const error = await res.json().catch(() => ({}));
+        alert("❌ Error loading: " + (error.message || res.statusText));
+        return { data: [], sha: null };
+      }
 
-            <div class="note">
-                <p>I, the above named applicant, do hereby solemnly declare that the above information is true to the best of my knowledge
-                    and belief. In case any of the above information will at any time be found incorrect, my appointment will be deemed as void ab initio, I shall be liable for
-                    immediate termination and this would be deemed as part of the contract of employment.</p>
-                <p>I am not suffering from any disease, which may render me unfit for the above post or affect the efficiency of my work. Do have the capacity to work in
-                    the post as applied for.</p>
-                <p>If my above credentials match to your required criteria, kindly contact me on above given details, at your convenience for further discussions, which shall
-                    include but not limit to personal interview, Sir.</p>
-                <p>I understand the employment / engagement criterions, and considering the same, I would request your good self to grant me an opportunity and permit
-                    me the association with your establishment, even on a probation basis. I confirm that I shall be hardworking, dedicated and faithful towards your
-                    esteemed organization.</p>
-            </div>
+      const json = await res.json();
+      if (!json.content) {
+        alert("❌ No content found");
+        return { data: [], sha: json.sha || null };
+      }
 
-            <div class="signature">Signature of Applicant</div>
+      try {
+        const decoded = atob(json.content);
+        const data = JSON.parse(decoded);
+        const sha = json.sha;
+        currentData = data;
+        renderTable(data);
+        return { data, sha };
+      } catch (err) {
+        alert("❌ Failed to parse data.");
+        return { data: [], sha: null };
+      }
+    }
 
-            <div class="section-title">For Office Use Only</div>
-            <div class="form-group">
-                <table class="education-table">
-                    <thead>
-                    <tr>
-                        <th>Date & Time</th>
-                        <th>Round</th>
-                        <th>Conducted By</th>
-                        <th>Score</th>
-                        <th>Remarks</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr>
-                        <td>anjali</td>
-                        <td>Technical / Online</td>
-                        <td>anjali</td>
-                        <td>anjali</td>
-                        <td>anjali</td>
-                    </tr>
-                    <tr>
-                        <td>anjali</td>
-                        <td>Practical 1</td>
-                        <td>anjali</td>
-                        <td>anjali</td>
-                        <td>anjali</td>
-                    </tr>
-                    <tr>
-                        <td>anjali</td>
-                        <td>Practical 2</td>
-                        <td>anjali</td>
-                        <td>anjali</td>
-                        <td>anjali</td>
-                    </tr>
-                    <tr>
-                        <td>anjali</td>
-                        <td>HR</td>
-                        <td>anjali</td>
-                        <td>anjali</td>
-                        <td>anjali</td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-            
-        </div>
+    // Save data to GitHub
+    async function saveData(updatedData, sha) {
+      const updatedContent = btoa(JSON.stringify(updatedData, null, 2));
+      return fetch(apiUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `token ${token}`,
+        },
+        body: JSON.stringify({
+          message: "Update JSON data",
+          content: updatedContent,
+          sha: sha,
+        }),
+      });
+    }
 
-    </body>
+    // Render table
+    function renderTable(data) {
+      let rows = '';
+      data.forEach((item, index) => {
+        rows += `<tr>
+          <td>${item.name}</td>
+          <td>${item.age}</td>
+          <td>
+            <button onclick="editData(${index})">Edit</button>
+            <button onclick="deleteData(${index})">Delete</button>
+          </td>
+        </tr>`;
+      });
+      $('#dataBody').html(rows);
+    }
+
+    // Form submit (Insert or Update)
+    $('#form').on('submit', async function (e) {
+      e.preventDefault();
+      const name = $('#name').val();
+      const age = $('#age').val();
+      const editIndex = $('#editIndex').val();
+
+      const { sha } = await loadData();
+
+      if (editIndex === '') {
+        // Insert
+        currentData.push({ name, age });
+      } else {
+        // Update
+        currentData[editIndex] = { name, age };
+        $('#editIndex').val('');
+      }
+
+      await saveData(currentData, sha);
+      $('#name').val('');
+      $('#age').val('');
+      loadData();
+    });
+
+    // Edit handler
+    window.editData = function (index) {
+      const item = currentData[index];
+      $('#name').val(item.name);
+      $('#age').val(item.age);
+      $('#editIndex').val(index);
+    }
+
+    // Delete handler
+    window.deleteData = async function (index) {
+      if (!confirm("Are you sure you want to delete this record?")) return;
+
+      const { sha } = await loadData();
+      currentData.splice(index, 1); // Remove item
+      await saveData(currentData, sha);
+      loadData();
+    }
+
+    // Load on page load
+    loadData();
+  </script>
+
+</body>
+
 </html>
