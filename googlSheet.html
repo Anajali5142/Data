@@ -1,48 +1,42 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-    <title>Google Sheet Form</title>
+  <title>Google Sheet Form</title>
 </head>
-
 <body>
-    <h2>Insert into Google Sheet</h2>
-    <form id="form">
-        <input type="text" id="name" placeholder="Name" required>
-        <input type="number" id="age" placeholder="Age" required>
-        <button type="submit">Save</button>
-    </form>
+  <h2>Insert into Google Sheet</h2>
+  <form id="form">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="number" id="age" placeholder="Age" required>
+    <button type="submit">Save</button>
+  </form>
 
-    <script>
-        const form = document.getElementById('form');
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxWNGuHkAsxVlHAP1WX65UWQ92BLe4PTNxzeylmldsa1Z829NlQAxI0CrIxwGbaqCmyrA/exec'; // 🔁 Replace with your actual Apps Script web app URL
+  <script>
+    const form = document.getElementById('form');
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbygfbUYnPE0L7OakTGbb51zF8gyVNVleWxquy-d1IO1B27E8jceaNQ1hsyZoC4IjaakfQ/exec';
 
-        form.addEventListener('submit', e => {
-            e.preventDefault();
+    function handleResponse(response) {
+      if (response.status === "success") {
+        alert("✅ Data inserted successfully!");
+        form.reset();
+      } else {
+        alert("❌ Error: " + response.message);
+      }
+    }
 
-            const data = {
-                name: document.getElementById('name').value,
-                age: document.getElementById('age').value
-            };
+    form.addEventListener('submit', e => {
+        debugger;
+      e.preventDefault();
 
-            fetch(scriptURL, {
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
+      const name = encodeURIComponent(document.getElementById('name').value);
+      const age = encodeURIComponent(document.getElementById('age').value);
+      const callback = 'handleResponse';
 
-            .then(response => response.json())
-            .then(result => {
-                alert("Data inserted successfully!");
-                form.reset();
-            })
-            .catch(error => {
-                console.error("Error!", error.message);
-            });
-        });
-    </script>
+      const url = `${scriptURL}?name=${name}&age=${age}&callback=${callback}`;
+      const script = document.createElement('script');
+      script.src = url;
+      document.body.appendChild(script);
+    });
+  </script>
 </body>
-
 </html>
