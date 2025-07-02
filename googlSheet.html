@@ -1,42 +1,111 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>Google Sheet Form</title>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 8px;
+    }
+  </style>
 </head>
+
 <body>
-  <h2>Insert into Google Sheet</h2>
+  <!-- HTML is mostly the same -->
   <form id="form">
+    <input type="hidden" id="recordId"> <!-- hidden for update -->
     <input type="text" id="name" placeholder="Name" required>
     <input type="number" id="age" placeholder="Age" required>
     <button type="submit">Save</button>
   </form>
 
+  <!-- Table -->
+  <table id="data-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Age</th>
+        <th>Timestamp</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
   <script>
     const form = document.getElementById('form');
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbygfbUYnPE0L7OakTGbb51zF8gyVNVleWxquy-d1IO1B27E8jceaNQ1hsyZoC4IjaakfQ/exec';
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx_i0lDRAU3fQt1NaelDPFTHlFvy_DEl1z2ShqpFMa3Z0N0sXP9k7muoWWCKsBYY8hwuQ/exec';
 
     function handleResponse(response) {
-      if (response.status === "success") {
-        alert("✅ Data inserted successfully!");
-        form.reset();
-      } else {
-        alert("❌ Error: " + response.message);
-      }
+      alert("✅ " + (response.status === "success" ? "Inserted" : response.status));
+      form.reset();
+      document.getElementById('recordId').value = '';
+      loadData();
+    }
+
+    function loadData() {
+      const callback = 'renderTable';
+      const url = `${scriptURL}?callback=${callback}`;
+      const script = document.createElement('script');
+      script.src = url;
+      document.body.appendChild(script);
+    }
+
+    function renderTable(data) {
+      const tbody = document.querySelector("#data-table tbody");
+      tbody.innerHTML = "";
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+        <td>${row.name}</td>
+        <td>${row.age}</td>
+        <td>${new Date(row.time).toLocaleString()}</td>
+        <td>
+          <button onclick="editRow('${row.id}', '${row.name}', '${row.age}')">✏️ Edit</button>
+          <button onclick="deleteRow('${row.id}')">🗑️ Delete</button>
+        </td>
+      `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function editRow(id, name, age) {
+      document.getElementById('recordId').value = id;
+      document.getElementById('name').value = name;
+      document.getElementById('age').value = age;
+    }
+
+    function deleteRow(id) {
+      const callback = 'handleResponse';
+      const url = `${scriptURL}?id=${id}&action=delete&callback=${callback}`;
+      const script = document.createElement('script');
+      script.src = url;
+      document.body.appendChild(script);
     }
 
     form.addEventListener('submit', e => {
-        debugger;
       e.preventDefault();
-
+      const id = document.getElementById('recordId').value;
       const name = encodeURIComponent(document.getElementById('name').value);
       const age = encodeURIComponent(document.getElementById('age').value);
       const callback = 'handleResponse';
-
-      const url = `${scriptURL}?name=${name}&age=${age}&callback=${callback}`;
+      const action = id ? 'update' : 'insert';
+      const url = `${scriptURL}?name=${name}&age=${age}&callback=${callback}&action=${action}` + (id ? `&id=${id}` : '');
       const script = document.createElement('script');
       script.src = url;
       document.body.appendChild(script);
     });
+
+    window.onload = loadData;
   </script>
 </body>
+
 </html>
